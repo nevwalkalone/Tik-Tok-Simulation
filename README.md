@@ -1,4 +1,4 @@
-# Tik-Tok-Simulation
+# Tik Tok Simulation
 
 ## Collaborators
 
