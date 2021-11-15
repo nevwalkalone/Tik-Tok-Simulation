@@ -18,6 +18,7 @@ public class Value implements Serializable {
     private byte[] videoFileChunk;
 
     private static final long serialVersionUID = -2723363051271966964L;
+	
     //Default Constructor
     public Value(){
 
