@@ -1,4 +1,4 @@
-# Tik-Tok-App
+# Tik-Tok-Simulation
 
 ## Collaborators
 
