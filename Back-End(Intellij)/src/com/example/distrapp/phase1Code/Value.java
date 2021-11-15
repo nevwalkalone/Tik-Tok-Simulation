@@ -4,9 +4,9 @@ import java.io.Serializable;
 import java.util.ArrayList;
 
 
-/**
+/*
  * CLASS TO REPRESENT A VIDEO OBJECT
- **/
+ */
 
 public class Value implements Serializable {
 
