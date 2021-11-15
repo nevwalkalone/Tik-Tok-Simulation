@@ -1,0 +1,38 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Base application theme. -->
+    <style name="Theme.DistrApp" parent="Theme.AppCompat.Light.DarkActionBar">
+        <!-- Primary brand color. -->
+        <item name="colorPrimary">@color/purple_500</item>
+        <item name="colorPrimaryDark">@color/purple_700</item>
+        <item name="colorAccent">@color/teal_200</item>
+        <!-- Customize your theme here. -->
+    </style>
+
+    <style name="SecondaryTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/purple_700</item>
+        <item name="colorPrimaryDark">@color/topBar</item>
+        <item name="colorAccent">@color/colorPrimary</item>
+        <item name="colorButtonNormal">@color/purple_700</item>
+        <!--make text selector black <item name="colorControlActivated">@color/colorPrimaryDark</item>-->
+
+        <item name="colorControlNormal">@color/colorWhite</item>
+        <item name="actionButtonStyle">@color/colorWhite</item>
+        <item name="selectableItemBackground">@color/colorWhite</item>
+        <item name="selectableItemBackgroundBorderless">@color/colorWhite</item>
+        <item name="colorControlHighlight">@color/colorWhite</item>
+        <item name="android:textColorHint">@color/colorSemiWhite</item>
+        <item name="android:editTextColor">@color/colorWhite</item>
+
+    </style>
+
+    <style name="SecondaryTheme.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+    <style name="SecondaryTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+    <style name="SecondaryTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
+</resources>

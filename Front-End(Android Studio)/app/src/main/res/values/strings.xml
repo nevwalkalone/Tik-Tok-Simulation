@@ -1,0 +1,36 @@
+<resources>
+    <string name="app_name">Tik Tok App</string>
+    <string name="log_in">Log In Screen</string>
+    <string name="menu_screen">Menu</string>
+    <string name="publish">Publish </string>
+    <string name="upload_video">Upload Video</string>
+    <string name="record_video">Record</string>
+    <string name="port">Port</string>
+    <string name="check_all_topics">Check Out All Topics!</string>
+    <string name="my_gallery">My Gallery</string>
+    <string name="onoma_video">onoma video</string>
+    <string name="published_vids">Published Videos</string>
+    <string name="videoname">Name</string>
+    <string name="vid_hashtags">Hashtags</string>
+    <string name="date_created">Date Created</string>
+    <string name="vid_length">Length</string>
+    <string name="vid_frame_rate">Frame Rate</string>
+    <string name="vid_frame_height">Frame Height</string>
+    <string name="vid_frame_width">Frame Width</string>
+    <string name="vid_info">Video Info</string>
+    <string name="add_new_item">add_new_item</string>
+    <string name="title_activity_topics_list">TopicsListActivity</string>
+    <!-- Strings used for fragments for navigation -->
+    <string name="first_fragment_label">First Fragment</string>
+    <string name="second_fragment_label">Second Fragment</string>
+    <string name="next">Next</string>
+    <string name="previous">Previous</string>
+    <string name="title_activity_topics">TopicsActivity</string>
+    <string name="onoma_topic">onoma_topic</string>
+    <string name="play">Play</string>
+    <string name="publish_vid">Publish your video</string>
+    <string name="enter">ENTER</string>
+    <string name="username">Username</string>
+    <string name="avail_topics">Available Topics</string>
+
+</resources>
