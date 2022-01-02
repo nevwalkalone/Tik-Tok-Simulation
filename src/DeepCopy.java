@@ -3,10 +3,9 @@ import java.io.ByteArrayOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
-/*
- * HELPER CLASS TO GET A DEEP COPY OF AN OBJECT
+/**
+ * Helper Class to get a deep copy of an object
  */
-
 public class DeepCopy {
     public static Object deepCopy(Object object) {
         try {

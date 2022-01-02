@@ -2,12 +2,10 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-/*
- * CLASS TO REPRESENT A THREAD THAT IS RESPONSIBLE
- * FOR ACTIONS RELATED TO PUBLISHER
- * TRIGGERED BY BROKER
+/**
+ * Class to represent a thread that is responsible for actions
+ * related to publisher, triggered by broker
  */
-
 public class ActionsForPublishers extends Thread {
 
     private ObjectOutputStream out;
@@ -39,7 +37,7 @@ public class ActionsForPublishers extends Thread {
             }
             else if (message.equals("Matching info"))  {
 
-                //Reading com.example.distrapp.phase1Code.AppNode Object
+                // Reading AppNode Object
                 Message temp = (Message) in.readObject();
 
                 AppNode newAppNode = (AppNode) temp.getData();
@@ -48,7 +46,7 @@ public class ActionsForPublishers extends Thread {
                 HashMap<String, ArrayList<Value>> tempForSubs = newAppNode.getChannel().getVideoFiles();
 
                 synchronized (broker){
-                    //add appnodes to the list
+                    // add appnodes to the list
                     broker.addAppnode(newAppNode);
                     //make HashMaps
                     broker.makeHashMaps(newAppNode);
@@ -57,11 +55,11 @@ public class ActionsForPublishers extends Thread {
             else if (message.equals("Published a new video!")){
                 System.out.println("An AppNode published a new video. Updating hashmaps.");
 
-                //Reading com.example.distrapp.phase1Code.AppNode Object
+                // Reading AppNode Object
                 Message temp = (Message) in.readObject();
                 AppNode newAppNode = (AppNode) temp.getData();
 
-                //Reading Video to be published
+                // Reading Video to be published
                 Message m = (Message) in.readObject();
 
                 Value video_to_pub = (Value) m.getData();
@@ -73,17 +71,16 @@ public class ActionsForPublishers extends Thread {
             else{
                 System.out.println("An AppNode deleted a video. Updating hashmaps.");
 
-                //Reading com.example.distrapp.phase1Code.AppNode Object
+                // Reading AppNode Object
                 Message temp = (Message) in.readObject();
                 AppNode newAppNode = (AppNode) temp.getData();
 
-                //Reading Video to be deleted
+                // Reading Video to be deleted
                 Message m = (Message) in.readObject();
-
                 Value video_to_del = (Value) m.getData();
 
                 synchronized(broker){
-                    //update hashmaps
+                    // update hashmaps
                     broker.updateHashMaps(newAppNode,video_to_del,"delete");
                 }
 

@@ -1,10 +1,9 @@
 import java.io.Serializable;
 import java.util.ArrayList;
 
-/*
- * CLASS TO REPRESENT A VIDEO OBJECT
+/**
+ * Class to represent a video object
  */
-
 public class Value implements Serializable {
 
     private String videoName;
@@ -19,12 +18,15 @@ public class Value implements Serializable {
 
     private static final long serialVersionUID = -2723363051271966964L;
 	
-    //Default Constructor
+    // Default Constructor
     public Value(){
 
     }
 
-    //for printing purposes
+    /**
+     * Method used to print the video object
+     * @return A String representation of the video object
+     */
     public String toString(){
         return " Videoname: " +this.getVideoName()+
                 ", found in com.example.distrapp.phase1Code.Channel: "+
@@ -34,6 +36,7 @@ public class Value implements Serializable {
 
 
     //GETTERS
+
     public String getVideoName() {
         return videoName;
     }
@@ -71,7 +74,8 @@ public class Value implements Serializable {
     }
 
 
-    //SETTERS
+    // SETTERS
+
     public void setVideoName(String videoName) {
         this.videoName = videoName;
     }

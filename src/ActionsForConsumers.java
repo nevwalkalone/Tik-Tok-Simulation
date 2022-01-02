@@ -2,11 +2,10 @@ import java.io.*;
 import java.util.*;
 import java.net.*;
 
-/*
- * CLASS TO REPRESENT A THREAD FOR PULLING VIDEO CHUNKS
- * FROM PUBLISHER AND SENDING THEM BACK TO CONSUMER
+/**
+ * Class to represent a thread for pulling video chunks from publisher
+ * and sending them back to consumer
  */
-
 public class ActionsForConsumers extends Thread {
 
     private ObjectInputStream inFromCons;
@@ -258,7 +257,7 @@ public class ActionsForConsumers extends Thread {
 
                 int totalVideos = (int) message.getData();
 
-                //sending it to consumer
+                // sending it to consumer
                 outToCons.writeObject(message);
                 outToCons.flush();
 
@@ -275,40 +274,27 @@ public class ActionsForConsumers extends Thread {
                     outToPub.writeUTF(send_vid_verif);
                     outToPub.flush();
 
-                    //Consumer has the video, so check next one
+                    // Consumer has the video, so check next one
                     if (send_vid_verif.equals("Don't send it.")){
                         continue;
                     }
 
-                    //reading video hashtags and sending it to consumer
+                    // reading the total number of chunks
                     Message hashtags = (Message) inFromPub.readObject();
+                    int totalChunks= (int) hashtags.getData();
+                    System.out.println("Total chunks: " + totalChunks);
                     outToCons.writeObject(hashtags);
                     outToCons.flush();
 
-                    //reading the total number of chunks
-                    message = (Message) inFromPub.readObject();
-                    //sending it to consumer
-                    outToCons.writeObject(message);
-                    outToCons.flush();
-
-                    int totalChunks = (int) message.getData();
 
                     for (int j = 0; j < totalChunks; j++) {
 
+                        Message temp = (Message) inFromPub.readObject();
 
-                        String chunkInc = inFromPub.readUTF();
-                        outToCons.writeUTF("Chunk incoming");
+                        // sending chunk to consumer
+                        outToCons.writeObject(temp);
                         outToCons.flush();
-
-                        if (chunkInc.equals("Chunk incoming")){
-                            Message temp = (Message) inFromPub.readObject();
-
-                            //sending chunk to consumer
-                            outToCons.writeObject(temp);
-                            outToCons.flush();
-                        }
                     }
-                    String all_good_message = inFromCons.readUTF();
                 }
             }
         }

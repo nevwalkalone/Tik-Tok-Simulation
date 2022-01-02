@@ -98,21 +98,24 @@ public class Broker implements Comparable , Serializable{
         try {
             while(true) {
 
-                //waiting for a connection
+                // waiting for a connection
                 Socket connection = brokerSocket.accept();
 
-                //out: to write to client
+                //System.out.println("BROKER GAMW");
+
+                // out: to write to client
                 ObjectOutputStream out = new ObjectOutputStream(connection.getOutputStream());
-                //in: to read from client
+
+                // in: to read from client
                 ObjectInputStream in= new ObjectInputStream(connection.getInputStream());
 
-                //reading initial message
-                //each message triggers a specific action
+                // reading initial message
+                // each message triggers a specific action
                 String initMessage = in.readUTF();
 
                 if (initMessage.equals("Init") || initMessage.equals("Matching info") || initMessage.equals("Published a new video!")  || initMessage.equals("Deleted a video.")){
 
-                    //Actions For Publisher Thread
+                    // Actions For Publisher Thread
                     Thread pub_thread = new ActionsForPublishers(initMessage,out,in,this);
 
                     pub_thread.start();
@@ -120,7 +123,7 @@ public class Broker implements Comparable , Serializable{
                 else{
                     System.out.println("Received Consumer Request.");
 
-                    //Actions for Consumer Thread
+                    // Actions for Consumer Thread
                     Thread cons_thread = new ActionsForConsumers(initMessage,out,in,this);
                     cons_thread.start();
                 }

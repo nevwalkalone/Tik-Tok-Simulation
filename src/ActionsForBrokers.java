@@ -12,33 +12,33 @@ public class ActionsForBrokers extends Thread {
     private ObjectInputStream in;
     private AppNode appNode;
 
-    //CONSTRUCTOR
-    public ActionsForBrokers(Socket connection, AppNode appNode){
+    // CONSTRUCTOR
+    public ActionsForBrokers(Socket connection, AppNode appNode) {
 
-        try{
+        try {
             out = new ObjectOutputStream(connection.getOutputStream());
             in = new ObjectInputStream(connection.getInputStream());
             this.appNode = appNode;
-        }
-        catch (IOException e){
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
+
     //Run process to follow
-    public void run()  {
+    public void run() {
         try {
             //reading initial message
             String message = in.readUTF();
 
             //topic request
-            if (message.equals("Searching for key")){
+            if (message.equals("Searching for key")) {
                 String key = in.readUTF();
                 push_topic(key);
             }
             //video pushing to
             //subscription thread
-            else{
+            else {
                 push_new_sub_video();
             }
         } catch (IOException ioException) {
@@ -47,8 +47,7 @@ public class ActionsForBrokers extends Thread {
             try {
                 in.close();
                 out.close();
-            }
-            catch (IOException ioException) {
+            } catch (IOException ioException) {
                 ioException.printStackTrace();
             }
         }
@@ -57,14 +56,14 @@ public class ActionsForBrokers extends Thread {
     //pushing a new specific video to a subscriber
     private void push_new_sub_video() throws IOException {
 
-        //reading video_name
+        // reading video_name
         String video_name = in.readUTF();
         ArrayList<Value> videos = this.appNode.getChannel().getChannelVideos();
         Value video = null;
 
-        //searching for the specific video
-        for (Value value:videos){
-            if (value.getVideoName().equals(video_name)){
+        // searching for the specific video
+        for (Value value : videos) {
+            if (value.getVideoName().equals(video_name)) {
                 video = value;
                 break;
             }
@@ -76,7 +75,7 @@ public class ActionsForBrokers extends Thread {
         out.writeObject(totalChunks);
         out.flush();
 
-        for (byte[] chunk:chunks){
+        for (byte[] chunk : chunks) {
             System.out.println(chunk.length);
             Message message = new Message(chunk);
             out.writeObject(message);
@@ -85,34 +84,33 @@ public class ActionsForBrokers extends Thread {
     }
 
 
-    //pushing videos to a consumer based on a specific topic
+    // pushing videos to a consumer based on a specific topic
     private void push_topic(String key) throws IOException {
-        if (!this.appNode.getChannel().getHashtagsPublished().contains(key)){
+        if (!this.appNode.getChannel().getHashtagsPublished().contains(key)) {
             System.out.println("Key not found!");
             out.writeUTF("Key not found");
             out.flush();
             return;
         }
-        //everything ok
+        // everything ok
         out.writeUTF("Key found");
         out.flush();
 
         ArrayList<Value> videosNeeded;
         HashMap<String, ArrayList<Value>> forLookup;
 
-        if (key.contains("#")){
+        if (key.contains("#")) {
             forLookup = this.appNode.getChannel().getVideoFiles();
             videosNeeded = forLookup.get(key);
-        }
-        else{
+        } else {
             videosNeeded = this.appNode.getChannel().getChannelVideos();
         }
-        //sending the number of videos
+        // sending the number of videos
         Message totalVideos = new Message(videosNeeded.size());
         out.writeObject(totalVideos);
         out.flush();
 
-        for (Value video:videosNeeded){
+        for (Value video : videosNeeded) {
             ArrayList<byte[]> chunks = this.appNode.getChannel().makeChunks(video.getVideoFileChunk());
 
             //sending video_name
@@ -122,16 +120,16 @@ public class ActionsForBrokers extends Thread {
             String send_vid_verif = in.readUTF();
 
             //Consumer has the video, so check next one
-            if (send_vid_verif.equals("Don't send it.")){
+            if (send_vid_verif.equals("Don't send it.")) {
                 continue;
             }
 
-            //sending the total number of chunks
+            // sending the total number of chunks
             Message totalChunks = new Message(chunks.size());
             out.writeObject(totalChunks);
             out.flush();
 
-            for (byte[] chunk:chunks){
+            for (byte[] chunk : chunks) {
                 Message message = new Message(chunk);
                 out.writeObject(message);
                 out.flush();

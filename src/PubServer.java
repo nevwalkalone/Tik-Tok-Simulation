@@ -2,27 +2,24 @@ import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 
-/*
- * CLASS TO REPRRESENT A THREAD FOR KEEPING THE PUBLISHER
- * SERVER UP
+/**
+ * Class to represent a thread for keeping the publisher server up
  */
-
 public class PubServer extends Thread {
 
     private AppNode appNode;
 
-    //boolean variable to inform us if the user was a consumer
-    //before becoming a publisher
+    // boolean variable to inform us if the user was a consumer before
+    // becoming a publisher
     private boolean consPubExists;
 
-
+    // Constructor
     public PubServer(AppNode appNode, boolean consPubExists)  {
-
         this.appNode = appNode;
         this.consPubExists = consPubExists;
     }
 
-    //Run process to follow
+    //Run process for the thread to follow
     public void run() {
         try {
             this.openPubServer();
@@ -33,16 +30,17 @@ public class PubServer extends Thread {
     }
 
     /**
-     * Opening publisher Server
-     * and waiting for broker request
-     **/
+     * Opening publisher Server and waiting for
+     * Broker request
+     * @throws IOException
+     */
     private void openPubServer() throws IOException {
 
         ServerSocket pubSocket = new ServerSocket(this.appNode.getPort());
 
         try {
-            //if the user was already a consumer
-            //don't create a new thread, because it already exists
+            // If the user was already a consumer, don't create a new
+            // thread, because it already exists
             if(this.consPubExists == false){
 
                 File temp_file = new File( System.getProperty("user.dir")+"//temp.txt");
@@ -52,12 +50,12 @@ public class PubServer extends Thread {
                 cons_thread.start();
             }
             while (true) {
-                //waiting for a broker to connect
+                // waiting for a broker to connect
                 Socket connection = pubSocket.accept();
 
-                System.out.println("[Acting as a Publisher] Received com.example.distrapp.phase1Code.Broker Request...");
+                System.out.println("[Acting as a Publisher] Received Broker Request...");
 
-                //Actions for Brokers thread
+                // Actions for Brokers thread
                 Thread t = new ActionsForBrokers(connection, this.appNode);
                 t.start();
             }

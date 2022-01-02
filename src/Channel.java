@@ -8,48 +8,49 @@ import org.apache.tika.parser.mp4.MP4Parser;
 import org.apache.tika.sax.BodyContentHandler;
 import org.xml.sax.SAXException;
 
-/*
- * CLASS TO REPRESENT THE CHANNEL OF A PRODUCER
+/**
+ * Class to represent the channel of a producer
  */
-
 public class Channel implements Serializable {
 
     public String channelName;
-
     private Set<String> hashtagsPublished = new HashSet<>();
-
     private ArrayList<Value> channelVideos = new ArrayList<>();
+    private ArrayList<String> publishedVideoNames = new ArrayList<>();
 
-    //Hashmap storing videos linked with a specific topic
+    // Hashmap storing videos linked with a specific topic
     private HashMap<String, ArrayList<Value>> userVideoFilesMap = new HashMap<>();
 
     private static final long serialVersionUID = -2723363051271966964L;
 
-    //Constructors
+    // Constructors
     public Channel(){
 
     }
 
     public Channel(String channelName){
-
         this.channelName = channelName;
     }
 
     /**
      * Setting up all info for the channel
-     **/
+     * @param path path that contains producers videos
+     * @throws IOException
+     * @throws TikaException
+     * @throws SAXException
+     */
     public void setUpChannel(String path) throws IOException, TikaException, SAXException {
 
-        //adding each video
+        // adding each video
         File myFile = new File (path+"/"+this.channelName+"/Hashtags-For-EachVideo.txt");
         Scanner myReader = new Scanner(myFile);
         String line;
         String st[];
 
         while (myReader.hasNextLine()){
-            //creating a new Video
+            // creating a new Video
             Value value = new Value();
-            //setting channel name for specific video
+            // setting channel name for specific video
             value.setChannelName(this.channelName);
             ArrayList<String> hashtContain = new ArrayList<>();
 
@@ -62,17 +63,16 @@ public class Channel implements Serializable {
                 }
                 else{
                     value.setVideoName(string);
+                    publishedVideoNames.add(string);
                 }
             }
-            //adding hashtags to the video
+            // adding hashtags to the video
             value.setAssociatedHashtags(hashtContain);
 
-            //adding hashtags of video
-            //to hashtags of the channel
+            // adding hashtags of video to hashtags of the channel
             this.addChannelHashtags(hashtContain);
 
-            //adding to hashmap
-            //new hashtags and video
+            // adding to hashmap new hashtags and video
             for (String hashtag:hashtContain) {
                 if (userVideoFilesMap.containsKey(hashtag)) {
                     userVideoFilesMap.get(hashtag).add(value);
@@ -83,26 +83,29 @@ public class Channel implements Serializable {
                     userVideoFilesMap.put(hashtag,temp);
                 }
             }
-            //metadata extraction
+            // metadata extraction
             this.extractMetaData(path+"/"+this.channelName+"/"+value.getVideoName(),value);
 
-            //adding video
-            //to channel's videos
+            // adding video to channel's videos
             this.addChannelVideos(value);
         }
     }
 
     /**
-     * Adding a new video
-     * and updating all structures
-     * appropriately
-     **/
+     * Adding a new video and updating all structures appropriately
+     * @param path path that contains producers videos
+     * @param firstVideo boolean value to inform us if this is the first video of the channel
+     * @return
+     * @throws IOException
+     * @throws TikaException
+     * @throws SAXException
+     */
     public ArrayList<String> addVideo(String path, boolean firstVideo) throws IOException, TikaException, SAXException {
 
         // Enter data using BufferReader
         BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
 
-        //Creating a directory if this is the first video
+        // Creating a directory if this is the first video
         if(firstVideo == true){
             File file = new File(path +"/"+this.channelName );
             file.mkdir();
@@ -114,6 +117,8 @@ public class Channel implements Serializable {
         File source = new File(video_path);
         String[] to_find_name = video_path.split("\\\\");
         String videoName = to_find_name[to_find_name.length-1];
+        publishedVideoNames.add(videoName);
+
         System.out.println("Please give additional info for the video.");
         System.out.println("Hashtags of the video:");
         String temp = reader.readLine();
@@ -138,10 +143,10 @@ public class Channel implements Serializable {
         }
         fw.close();
 
-        //creating a new Video
+        // creating a new Video
         Value value = new Value();
 
-        //setting channel name for specific video
+        // setting channel name for specific video
         value.setChannelName(this.channelName);
         value.setVideoName(videoName);
 
@@ -151,18 +156,16 @@ public class Channel implements Serializable {
             hashtContain.add(string);
         }
 
-        //adding hashtags to the video
+        // adding hashtags to the video
         value.setAssociatedHashtags(hashtContain);
 
-        //adding hashtags of video
-        //to hashtags of the channel
+        // adding hashtags of video to hashtags of the channel
         this.addChannelHashtags(hashtContain);
 
-        //hashtags to be returned
+        // hashtags to be returned
         ArrayList<String> newHashtags = new ArrayList<>();
 
-        //adding to hashmap
-        //new hashtags and video
+        // adding to hashmap new hashtags and video
         for (String hashtag:hashtContain) {
             if (userVideoFilesMap.containsKey(hashtag)) {
                 userVideoFilesMap.get(hashtag).add(value);
@@ -175,49 +178,46 @@ public class Channel implements Serializable {
             }
         }
 
-        //copying video to the producer's directory
+        // copying video to the producer's directory
         File dest = new File(path+"/"+this.channelName+"/"+value.getVideoName());
         FileUtils.copyFile(source, dest);
 
-        //extract Meta Data
+        // extract Meta Data
         this.extractMetaData(path+"/"+this.channelName+"/"+value.getVideoName(),value);
 
-        //adding video
-        //to channel's videos
+        // adding video to channel's videos
         this.addChannelVideos(value);
 
-        //reader.close();
-        //returning new hashtags to add them to brokermatch hashmap
+        // returning new hashtags to add them to brokermatch hashmap
         return newHashtags;
     }
 
     /**
-     * Removing a video
-     * and updating all structures
-     * appropriately
-     **/
+     * Removing a video and updating all structures appropriately
+     * @param video_to_del Video to be removed
+     * @return ArrayList of hashtags to be removed
+     */
     public ArrayList<String> removeVideo(Value video_to_del){
-
         ArrayList<Value> channelVideos = this.getChannelVideos();
 
-        //removing video from channelVideos
+        // removing video from channelVideos
         channelVideos.remove(video_to_del);
 
-        //video hashtags
+        publishedVideoNames.remove(video_to_del.getVideoName());
+
+        // video hashtags
         ArrayList<String> video_tags = video_to_del.getAssociatedHashtags();
 
-        //all  hashtags
+        // all  hashtags
         Set<String> hashtagsPublished = this.getHashtagsPublished();
 
-        //hashtags returning to appnode
-        //so they are removed from brokermatch
-        //hashmap
+        // hashtags returning to appnode so they are removed
+        // from brokermatch hashmap
         ArrayList<String> hashtagsToBeRemoved = new ArrayList<>();
-
         HashMap<String, ArrayList<Value>> videoFileMap = this.getVideoFiles();
 
         for (String hashtag:video_tags){
-            //videos containing the specific hashtag
+            // videos containing the specific hashtag
             ArrayList<Value> hashtag_vids = this.getVideoFiles().get(hashtag);
 
             if(hashtag_vids.size() == 1){
@@ -234,8 +234,13 @@ public class Channel implements Serializable {
     }
 
     /**
-     *  Meta Data extraction for specific video
-     **/
+     * Meta Data extraction for specific video
+     * @param path
+     * @param video
+     * @throws IOException
+     * @throws TikaException
+     * @throws SAXException
+     */
     public void extractMetaData(String path, Value video) throws IOException, TikaException, SAXException {
 
         //detecting the file type
@@ -244,7 +249,7 @@ public class Channel implements Serializable {
         FileInputStream inputstream = new FileInputStream(new File(path));
         ParseContext pcontext = new ParseContext();
 
-        //Html parser
+        // Html parser
         MP4Parser MP4Parser = new MP4Parser();
         MP4Parser.parse(inputstream, handler, metadata,pcontext);
         String[] metadataNames = metadata.names();
@@ -273,10 +278,12 @@ public class Channel implements Serializable {
 
     /**
      * Dividing a video into chunks
-     **/
+     * @param bytes Bytes to be divided
+     * @return Arraylist of chunks
+     */
     public ArrayList<byte[]> makeChunks(byte[] bytes) {
 
-        //0.5 mb each chunk
+        // 0.5 mb each chunk
         int chunkSize = 512 * 1024;
         ArrayList<byte[]> chunks = new ArrayList<>();
         //System.out.println(bts.length % blockSize);
@@ -302,9 +309,11 @@ public class Channel implements Serializable {
         return chunks;
     }
 
-    //-----------------------------------------
+    // GETTERS
 
-    //GETTERS
+    public ArrayList<String> getPublishedVideoNames() {
+        return publishedVideoNames;
+    }
 
     public Set<String> getHashtagsPublished() {
 
@@ -326,11 +335,10 @@ public class Channel implements Serializable {
         return userVideoFilesMap;
     }
 
-    //-----------------------------------------
-
     /**
-     * Add a hashtag to channel's hashtag
-     **/
+     * Add new hastags to channel's hashtag
+     * @param hashtags Hashtags to be added
+     */
     public void addChannelHashtags(ArrayList<String> hashtags){
         for (String tag:hashtags){
             this.getHashtagsPublished().add(tag);
@@ -339,7 +347,8 @@ public class Channel implements Serializable {
 
     /**
      * Add a video to channel's videos
-     **/
+     * @param value Video to be added
+     */
     public void addChannelVideos(Value value) {
 
         this.channelVideos.add(value);
