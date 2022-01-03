@@ -10,7 +10,6 @@ import java.util.HashMap;
  */
 public class RefreshVids extends Thread{
 
-
     private ConsAndPubActions consAndPubActions;
     private String channel_name;
     private ObjectInputStream in;
@@ -85,6 +84,11 @@ public class RefreshVids extends Thread{
 
                         // we already have this video so continue again
                         if (this.consAndPubActions.savedVideos.contains(new_video.getVideoName())){
+                            continue;
+                        }
+
+                        // we have already published this video so continue
+                        if (this.consAndPubActions.appNode.getChannel().getPublishedVideoNames().contains(new_video.getVideoName())){
                             continue;
                         }
 

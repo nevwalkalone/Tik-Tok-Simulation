@@ -20,7 +20,6 @@ public class Value implements Serializable {
 	
     // Default Constructor
     public Value(){
-
     }
 
     /**
@@ -29,14 +28,12 @@ public class Value implements Serializable {
      */
     public String toString(){
         return " Videoname: " +this.getVideoName()+
-                ", found in com.example.distrapp.phase1Code.Channel: "+
+                ", found in Channel: "+
                 this.getChannelName()+", date created: "+this.getDateCreated()+"\n"+this.getFrameWidth()
                 +"\n"+this.getFrameHeight()+"\n"+this.getLength()+"\n"+this.getAssociatedHashtags();
     }
 
-
-    //GETTERS
-
+    //Getters
     public String getVideoName() {
         return videoName;
     }
@@ -74,8 +71,7 @@ public class Value implements Serializable {
     }
 
 
-    // SETTERS
-
+    // Setters
     public void setVideoName(String videoName) {
         this.videoName = videoName;
     }

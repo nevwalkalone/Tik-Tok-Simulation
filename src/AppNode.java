@@ -39,7 +39,7 @@ public class AppNode implements Serializable {
 
     /**
      * Reading and writing to config files to set up Broker
-     * @param path
+     * @param path that contains the configuration txt file
      * @throws IOException
      */
     private void readFile(String path) throws IOException {
@@ -50,11 +50,11 @@ public class AppNode implements Serializable {
         String line = br.readLine();
         String[] st = line.split(" ");
 
-        //setting IP,port
+        // setting IP,port
         this.setPort(Integer.parseInt(st[1]));
         this.setIP(st[0]);
 
-        //writing to the file for the next AppNode
+        // writing to the file for the next AppNode
         FileWriter myWriter = new FileWriter(path);
         String new_port = Integer.toString(this.port + 1);
         myWriter.write(st[0] + " " + new_port);
@@ -168,7 +168,6 @@ public class AppNode implements Serializable {
         ObjectInputStream in = null; ;
 
         try {
-            System.out.println(broker.getIP()+" "+broker.getPort());
             appNodeConnection = new Socket(broker.getIP(), broker.getPort());
             out = new ObjectOutputStream(appNodeConnection.getOutputStream());
             in = new ObjectInputStream(appNodeConnection.getInputStream());
@@ -304,7 +303,7 @@ public class AppNode implements Serializable {
             out = new ObjectOutputStream(appNodeConnection.getOutputStream());
             in = new ObjectInputStream(appNodeConnection.getInputStream());
 
-            //sending appropriate message to Broker
+            // sending appropriate message to Broker
             out.writeUTF(message);
             out.flush();
 
@@ -333,7 +332,7 @@ public class AppNode implements Serializable {
     }
 
     /**
-     * Making a deep copy of AppNode. Also setting all video
+     * Makes a deep copy of AppNode. Also setting all video
      * File chunk values to null to avoid sending whole video
      * in initial connection with brokers, before they make a pull request
      * @return AppNode with null video bytes.
@@ -386,8 +385,7 @@ public class AppNode implements Serializable {
         return "AppNode with IP: " + this.getIP() + " and port: " + this.getPort();
     }
 
-    // GETTERS
-
+    // Getters
     public String getIP() {
         return IP;
     }
@@ -410,8 +408,7 @@ public class AppNode implements Serializable {
         return brokers;
     }
 
-    // SETTERS
-
+    // Setters
     public void setChannel(Channel channel) {
         this.channel = channel;
     }
@@ -443,7 +440,6 @@ public class AppNode implements Serializable {
 
     // Main function
     public static void main(String args[]) throws IOException, TikaException, SAXException {
-
         AppNode  appNode= new AppNode();
     }
 }

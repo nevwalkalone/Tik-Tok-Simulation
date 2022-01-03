@@ -13,7 +13,7 @@ public class ActionsForPublishers extends Thread {
     private String message;
     private Broker broker;
 
-    //Constructor
+    // Constructor
     public ActionsForPublishers (String message, ObjectOutputStream out, ObjectInputStream in, Broker broker){
         this.out = out;
         this.in = in;
@@ -21,15 +21,16 @@ public class ActionsForPublishers extends Thread {
         this.broker = broker;
     }
 
-    //Run process to follow
+    /**
+     * Run process for the thread to follow
+     */
     public void run(){
         try {
             if (message.equals("Init")) {
 
                 System.out.println("Received INITIAL AppNode connection.");
 
-                //sending broker hash
-                //to publisher
+                // sending broker hash to publisher
                 Message message = new Message(broker.getHash());
                 out.writeObject(message);
                 out.flush();
@@ -48,7 +49,7 @@ public class ActionsForPublishers extends Thread {
                 synchronized (broker){
                     // add appnodes to the list
                     broker.addAppnode(newAppNode);
-                    //make HashMaps
+                    // make HashMaps
                     broker.makeHashMaps(newAppNode);
                 }
             }
@@ -61,7 +62,6 @@ public class ActionsForPublishers extends Thread {
 
                 // Reading Video to be published
                 Message m = (Message) in.readObject();
-
                 Value video_to_pub = (Value) m.getData();
 
                 synchronized (broker){
@@ -83,7 +83,6 @@ public class ActionsForPublishers extends Thread {
                     // update hashmaps
                     broker.updateHashMaps(newAppNode,video_to_del,"delete");
                 }
-
             }
         }
         catch (IOException | ClassNotFoundException ioException) {

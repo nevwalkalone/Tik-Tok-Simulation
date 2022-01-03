@@ -5,9 +5,8 @@ import org.apache.tika.exception.TikaException;
 import org.xml.sax.SAXException;
 
 /**
- * CLASS TO REPRESENT CONSUMER AND PUBLISHER ACTIONS
- **/
-
+ * Class to represent consumer and publisher actions
+ */
 public class ConsAndPubActions extends Thread {
 
     public List savedVideos = new ArrayList();
@@ -15,20 +14,23 @@ public class ConsAndPubActions extends Thread {
     private boolean hasVideos;
     public HashMap<String, Broker> HashInfo = new HashMap<>();
     private boolean firstRequest = true;
-    //path with all videos
+
+    // path with all videos
     private String path;
 
-    //topics this consumer is subbed
+    // topics this consumer is subbed to
     public HashMap<String, ArrayList<Value>> subbedTopics = new HashMap<>();
 
-    //CONSTRUCTOR
+    // Constructor
     public ConsAndPubActions(AppNode appNode, boolean hasVideos, String path) {
         this.appNode = appNode;
         this.hasVideos =hasVideos;
         this.path = path;
     }
 
-    //Run process to follow
+    /**
+     * Run process for the thread to follow
+     */
     public void run()  {
         Socket consumerConnection = null;
         ObjectOutputStream out = null;
@@ -58,7 +60,7 @@ public class ConsAndPubActions extends Thread {
 
                 if (choice == 1) {
 
-                    //read topic
+                    // read topic
                     String topic = reader.readLine();
 
                     //connect to a random broker

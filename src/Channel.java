@@ -24,10 +24,7 @@ public class Channel implements Serializable {
     private static final long serialVersionUID = -2723363051271966964L;
 
     // Constructors
-    public Channel(){
-
-    }
-
+    public Channel(){}
     public Channel(String channelName){
         this.channelName = channelName;
     }
@@ -95,7 +92,7 @@ public class Channel implements Serializable {
      * Adding a new video and updating all structures appropriately
      * @param path path that contains producers videos
      * @param firstVideo boolean value to inform us if this is the first video of the channel
-     * @return
+     * @return new hashtags to add them to brokermatch hashmap
      * @throws IOException
      * @throws TikaException
      * @throws SAXException
@@ -208,7 +205,7 @@ public class Channel implements Serializable {
         // video hashtags
         ArrayList<String> video_tags = video_to_del.getAssociatedHashtags();
 
-        // all  hashtags
+        // all hashtags
         Set<String> hashtagsPublished = this.getHashtagsPublished();
 
         // hashtags returning to appnode so they are removed
@@ -235,15 +232,15 @@ public class Channel implements Serializable {
 
     /**
      * Meta Data extraction for specific video
-     * @param path
-     * @param video
+     * @param path path of video to be extracted
+     * @param video video to be extracted
      * @throws IOException
      * @throws TikaException
      * @throws SAXException
      */
     public void extractMetaData(String path, Value video) throws IOException, TikaException, SAXException {
 
-        //detecting the file type
+        // detecting the file type
         BodyContentHandler handler = new BodyContentHandler();
         Metadata metadata = new Metadata();
         FileInputStream inputstream = new FileInputStream(new File(path));
@@ -267,9 +264,7 @@ public class Channel implements Serializable {
         }
         File file = new File(path);
         BufferedInputStream fileInputStream = new BufferedInputStream(new FileInputStream(file));
-
         video.setLength((int) file.length());
-
         byte[] bytes = new byte[(int) file.length()];
         fileInputStream.read(bytes);
         video.setVideoFileChunk(bytes);
@@ -309,8 +304,7 @@ public class Channel implements Serializable {
         return chunks;
     }
 
-    // GETTERS
-
+    // Getters
     public ArrayList<String> getPublishedVideoNames() {
         return publishedVideoNames;
     }
@@ -353,5 +347,4 @@ public class Channel implements Serializable {
 
         this.channelVideos.add(value);
     }
-
 }

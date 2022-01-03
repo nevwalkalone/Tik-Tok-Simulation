@@ -2,17 +2,15 @@ import java.io.*;
 import java.net.Socket;
 import java.util.*;
 
-/*
- * CLASS TO REPRESENT A THREAD FOR PUSHING VIDEO CHUNKS
- * TO BROKER
+/**
+ * Class to represent a thread for pushing video chunks to broker
  */
-
 public class ActionsForBrokers extends Thread {
     private ObjectOutputStream out;
     private ObjectInputStream in;
     private AppNode appNode;
 
-    // CONSTRUCTOR
+    // Constructor
     public ActionsForBrokers(Socket connection, AppNode appNode) {
 
         try {
@@ -24,20 +22,20 @@ public class ActionsForBrokers extends Thread {
         }
     }
 
-
-    //Run process to follow
+    /**
+     * Run process for the thread to follow
+     */
     public void run() {
         try {
-            //reading initial message
+            // reading initial message
             String message = in.readUTF();
 
-            //topic request
+            // topic request
             if (message.equals("Searching for key")) {
                 String key = in.readUTF();
                 push_topic(key);
             }
-            //video pushing to
-            //subscription thread
+            // video pushing to subscription thread
             else {
                 push_new_sub_video();
             }
@@ -53,7 +51,10 @@ public class ActionsForBrokers extends Thread {
         }
     }
 
-    //pushing a new specific video to a subscriber
+    /**
+     * Pushing a new specific video to a subscriber
+     * @throws IOException
+     */
     private void push_new_sub_video() throws IOException {
 
         // reading video_name
@@ -68,23 +69,26 @@ public class ActionsForBrokers extends Thread {
                 break;
             }
         }
+
         ArrayList<byte[]> chunks = this.appNode.getChannel().makeChunks(video.getVideoFileChunk());
 
-        //sending the total number of chunks
+        // sending the total number of chunks
         Message totalChunks = new Message(chunks.size());
         out.writeObject(totalChunks);
         out.flush();
 
         for (byte[] chunk : chunks) {
-            System.out.println(chunk.length);
             Message message = new Message(chunk);
             out.writeObject(message);
             out.flush();
         }
     }
 
-
-    // pushing videos to a consumer based on a specific topic
+    /**
+     * Pushing videos to a consumer based on a specific topic
+     * @param key the topic
+     * @throws IOException
+     */
     private void push_topic(String key) throws IOException {
         if (!this.appNode.getChannel().getHashtagsPublished().contains(key)) {
             System.out.println("Key not found!");
@@ -113,13 +117,13 @@ public class ActionsForBrokers extends Thread {
         for (Value video : videosNeeded) {
             ArrayList<byte[]> chunks = this.appNode.getChannel().makeChunks(video.getVideoFileChunk());
 
-            //sending video_name
+            // sending video_name
             out.writeUTF(video.getVideoName());
             out.flush();
 
             String send_vid_verif = in.readUTF();
 
-            //Consumer has the video, so check next one
+            // Consumer has the video, so check next one
             if (send_vid_verif.equals("Don't send it.")) {
                 continue;
             }

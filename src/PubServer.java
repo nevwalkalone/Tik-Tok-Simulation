@@ -19,7 +19,7 @@ public class PubServer extends Thread {
         this.consPubExists = consPubExists;
     }
 
-    //Run process for the thread to follow
+    // Run process for the thread to follow
     public void run() {
         try {
             this.openPubServer();
