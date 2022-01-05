@@ -139,14 +139,13 @@ public class ConsAndPubActions extends Thread {
                                 "has published videos linked with the specific topic");
                     }
 
-                    //System.out.println("number of appnodes"+number_of_apps);
                     for (int k=0; k<number_of_apps; k++) {
 
                         ok_message = in.readUTF();
                         if (ok_message.equals("Key not found")){
                             continue;
                         }
-                        //reading the number of videos
+                        // reading the number of videos
                         Message message2 = (Message) in.readObject();
                         int totalVideos = (int) message2.getData();
 
@@ -170,7 +169,7 @@ public class ConsAndPubActions extends Thread {
                             message = (Message) in.readObject();
                             int totalChunks = (int) message.getData();
 
-                            //saving the mp4 video locally
+                            // saving the mp4 video locally
                             OutputStream chunkToFile = new FileOutputStream(path +"/"+this.appNode.getChannel().getChannelName()+"-cons/"+ video_name);
 
                             for (int j = 0; j < totalChunks; j++) {
@@ -196,7 +195,7 @@ public class ConsAndPubActions extends Thread {
                     String topic = reader.readLine();
 
 
-                    //connect to a random broker
+                    // connect to a random broker
                     if(firstRequest){
                         firstRequest = false;
 
@@ -385,7 +384,12 @@ public class ConsAndPubActions extends Thread {
                 }
                 // Delete video choice
                 else if (choice==5){
-                    this.appNode.deleteVideo();
+                    if (hasVideos==false){
+                        System.out.println("You don't have any videos to delete!");
+                    }
+                    else{
+                        this.appNode.deleteVideo();
+                    }
                 }
                 // Exit choice
                 else{
